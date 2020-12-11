@@ -1,0 +1,15 @@
+FROM python:3.9-slim-buster
+
+#deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libffi-dev \
+        libnacl-dev \
+        python3-dev \
+        gcc \
+        ffmpeg
+
+# Install pip requirements
+WORKDIR /app
+
+COPY /app/requirements.txt .
+RUN python -m pip install -r requirements.txt

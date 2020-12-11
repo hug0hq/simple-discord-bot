@@ -1,31 +1,55 @@
-#bot by hug0Hq
 import discord
 from discord.ext import commands
-from discord.ext.commands import Bot
+import os
+""" from discord.ext.commands import Bot
 import asyncio
 import json
 import os
 import requests
-import shutil
+import shutil """
 
-__author__ = "Hugo"
-__version__ = "1.0"
+__author__ = "Hugo - hug0Hq"
+__version__ = "1.2"
 
-bot = commands.Bot(command_prefix = "#")
 
-@bot.event
+intents = discord.Intents(messages=True, guilds=True)
+client = commands.Bot(command_prefix='-', intents=intents)
+
+
+@client.event
 async def on_ready():
-    print("Ready when you are!")
-    print("I am running on " + bot.user.name)
-    print("With the ID: " + bot.user.id)
+    print('We have logged in as {0.user} [ready]'.format(client))
 
 
-#@bot.event
-#async def on_message(message):
-#await bot.delete_message(message)
+@client.command()
+async def ping(ctx):
+    await ctx.send(f'🏓 Pong! {round(client.latency, 2)} 🏓')
 
-#help info
-@bot.command(pass_context=True)
+
+@client.command()
+async def playing(ctx):
+    await client.change_presence(activity=discord.Game(name='VS Code 🔨🔨'))
+
+
+@client.command()
+async def watch(ctx):
+    activity = discord.Activity(
+        name='Coding 🔨🔨', type=discord.ActivityType.watching)
+    await client.change_presence(activity=activity)
+
+for file in os.listdir("cogs"):
+    if file.endswith(".py"):
+        name = file[:-3]
+        client.load_extension(f"cogs.{name}")
+
+client.run(os.environ['API_KEY'])
+
+# @bot.event
+# async def on_message(message):
+# await bot.delete_message(message)
+
+# help info
+""" @bot.command(pass_context=True)
 async def info(ctx):
     p = await bot.get_message(ctx.message.channel, ctx.message.id)
     await bot.delete_message(p)
@@ -177,7 +201,4 @@ async def play(ctx, soundid):
             await bot.say(ctx.message.channel, fmt.format(type(e).__name__, e))
 
     else:
-        await bot.say('You\'re not in a voice channel!')
-
-
-bot.run("api-key") 
+        await bot.say('You\'re not in a voice channel!') """
