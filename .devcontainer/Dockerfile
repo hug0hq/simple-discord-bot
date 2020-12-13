@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libnacl-dev \
         python3-dev \
         gcc \
+        opus-tools \
         ffmpeg
 
 # Install pip requirements

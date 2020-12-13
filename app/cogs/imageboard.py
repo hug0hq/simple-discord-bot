@@ -13,7 +13,7 @@ class ImageBoard(commands.Cog):
     @commands.command(name='img', aliases=['pic'])
     async def displayImg(self, ctx, key):
         await ctx.message.delete()     
-        url = await db.getFrom('imageboard', key)                
+        url = await db.getFrom(ctx.guild.id, 'imageboard', key)                
         embed = discord.Embed(title="",  colour=0xff4444)
         #embed.add_field(name=f"{question} ?", value="l")
         embed.set_footer(text=f"{key}")
@@ -38,7 +38,7 @@ class ImageBoard(commands.Cog):
             await ctx.send(att.filename.split('.')[-1]+" is not a valid image format")
         else:
             #await db.createDictionary('imageboard')
-            await db.saveTo('imageboard', (keyname, url))
+            await db.saveTo(ctx.guild.id, 'imageboard', (keyname, url))
             await ctx.send("☁☁ done")
 
 def setup(bot):

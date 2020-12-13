@@ -1,45 +1,38 @@
 import pickledb
+import os
 
-DB_PATH = "./../save"
-
-# class DB:
-
-#   def __init__(self, connection, name):
-#       self.db = connection[name]
-#       self.logger = logging.getLogger(__name__)
-
-# async def createDB(self, db):
+PATH = os.environ['SAVE_PATH']
 
 
-async def save(key, value):
-    d = pickledb.load(DB_PATH+'/test.json', False)      
-    print(f'save {value}')
-    d.set(key, value)
-    d.dadd('soundboard', ("apple", "banana", "cherry") )
-    print(d.dgetall('soundboard') )
-    print(d.dget('soundboard', 'apple'))
-    d.dump()
+def delKey(guild, dic, key):
+    """ delete one key on a dictionary """
+    pk = pickledb.load(f'{PATH}/{guild}.json', True)
+    if pk.dexists(dic, key):
+        pk.dpop(dic, key)
 
-async def saveTo(dic, value):
-    d = pickledb.load(DB_PATH+'/test.json', False)      
+
+def delAll(guild, dic):
+    """ delete all the keys on a dictionary """
+    pk = pickledb.load(f'{PATH}/{guild}.json', True)
+    if pk.exists(dic):
+        pk.drem(dic)
+
+
+def nuke(guild):
+    """ delete db """
+    pk = pickledb.load(f'{PATH}/{guild}.json', True)
+    pk.deldb()
+
+
+def saveTo(guild, dic, value):
+    pk = pickledb.load(f'{PATH}/{guild}.json', True)
+    if not pk.exists(dic):
+        pk.dcreate(dic)
+
     print(f'save {value} in {dic}')
-    d.dadd(dic, value )
-    d.dump()
-
-async def createDictionary(dic):
-    d = pickledb.load(DB_PATH+'/test.json', False)
-    d.dcreate(dic)
-    d.dump()     
-
-async def getFrom(dic, key):
-    d = pickledb.load(DB_PATH+'/test.json', False)
-    return d.dget(dic, key)
-
-async def get(key):
-    d = pickledb.load('test', False)
-    return d.get(key)
+    pk.dadd(dic, value)
 
 
-async def getAll():
-    d = pickledb.load('test', False)
-    return d.getall()
+def getFrom(guild, dic, key):
+    pk = pickledb.load(f'{PATH}/{guild}.json', False)
+    return pk.dget(dic, key)

@@ -17,24 +17,24 @@ class SoundBoard(commands.Cog):
     @commands.command(name='playsound', aliases=['play', 'plays', 'sound'])
     async def playsound(self, ctx, key):
         await ctx.message.delete()
-
-        if not discord.opus.is_loaded():
-            discord.opus.load_opus('/usr/bin/opusenc')
-
         if not ctx.message.author.voice:
             await ctx.send('You\'re not in a voice channel!')
             return
         else:
+            if not discord.opus.is_loaded():
+                discord.opus.load_opus('/usr/bin/opusenc')
+
             channel = ctx.message.author.voice.channel
             try:
                 voice = await channel.connect()
-                url = await db.getFrom('soundboard', key)
+                url = await db.getFrom(ctx.guild.id, 'soundboard', key)
                 print(url)
 
                 def my_after(error):
                     #coro = voice.disconnect()
                     print('Done', error)
-                    fut = asyncio.run_coroutine_threadsafe( voice.disconnect(), self.bot.loop)
+                    fut = asyncio.run_coroutine_threadsafe(
+                        voice.disconnect(), self.bot.loop)
                     try:
                         fut.result()
                     except:
@@ -46,6 +46,10 @@ class SoundBoard(commands.Cog):
 
             except Exception as e:
                 print(e)
+    
+    """ @commands.command(name='test', aliases=['t'])
+    async def test(self, ctx):
+        db.test() """
 
     @commands.command(name='addsound', aliases=['adds'])
     async def addsound(self, ctx, *, key):
@@ -64,7 +68,7 @@ class SoundBoard(commands.Cog):
             await ctx.send(att.filename.split('.')[-1]+" is not a valid audio format")
         else:
             # await db.createDictionary('soundboard')
-            await db.saveTo('soundboard', (keyname, url))
+            await db.saveTo( ctx.guild.id, 'soundboard', (keyname, url))
             await ctx.send("☁☁ done")
 
 

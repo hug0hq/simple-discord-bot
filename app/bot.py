@@ -13,13 +13,12 @@ __version__ = "1.2"
 
 
 intents = discord.Intents(messages=True, guilds=True)
-client = commands.Bot(command_prefix='-', intents=intents)
-
+#client = commands.Bot(command_prefix='-', intents=intents)
+client = commands.Bot(command_prefix='-')
 
 @client.event
 async def on_ready():
     print('We have logged in as {0.user} [ready]'.format(client))
-
 
 @client.command()
 async def ping(ctx):

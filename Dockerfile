@@ -8,6 +8,7 @@ ENV PYTHONUNBUFFERED=1
 
 #deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        opus-tools \
         ffmpeg
 
 WORKDIR /app
