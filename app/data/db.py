@@ -36,3 +36,8 @@ def saveTo(guild, dic, value):
 def getFrom(guild, dic, key):
     pk = pickledb.load(f'{PATH}/{guild}.json', False)
     return pk.dget(dic, key)
+
+
+def listKeysFrom(guild, dic):
+    pk = pickledb.load(f'{PATH}/{guild}.json', False)
+    return pk.dkeys(dic)

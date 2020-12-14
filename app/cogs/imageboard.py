@@ -10,10 +10,16 @@ class ImageBoard(commands.Cog):
     async def __stop(self):       
         await self.voice.disconnect() 
 
-    @commands.command(name='img', aliases=['pic'])
+    @commands.group(name='img', aliases=['i'])
+    async def img(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.message.delete()
+            await ctx.send('Invalid poll command passed...')
+
+    @img.command(name='show', aliases=['s'])
     async def displayImg(self, ctx, key):
         await ctx.message.delete()     
-        url = await db.getFrom(ctx.guild.id, 'imageboard', key)                
+        url = db.getFrom(ctx.guild.id, 'imageboard', key)                
         embed = discord.Embed(title="",  colour=0xff4444)
         #embed.add_field(name=f"{question} ?", value="l")
         embed.set_footer(text=f"{key}")
@@ -21,7 +27,7 @@ class ImageBoard(commands.Cog):
         message = await ctx.channel.send(embed=embed)
        
 
-    @commands.command(name='addimg', aliases=['addi', 'addp'])
+    @img.command(name='add', aliases=['a'])
     async def addimg(self, ctx, *, key):
         # p = await bot.get_message(ctx.message.channel, ctx.message.id)
         # await bot.delete_message(p)
@@ -38,8 +44,8 @@ class ImageBoard(commands.Cog):
             await ctx.send(att.filename.split('.')[-1]+" is not a valid image format")
         else:
             #await db.createDictionary('imageboard')
-            await db.saveTo(ctx.guild.id, 'imageboard', (keyname, url))
-            await ctx.send("☁☁ done")
+            db.saveTo(ctx.guild.id, 'imageboard', (keyname, url))
+            await ctx.send("⬆ don't delete the source img\n☁☁ Done!")
 
 def setup(bot):
     bot.add_cog(ImageBoard(bot))

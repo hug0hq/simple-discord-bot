@@ -13,28 +13,37 @@ __version__ = "1.2"
 
 
 intents = discord.Intents(messages=True, guilds=True)
-#client = commands.Bot(command_prefix='-', intents=intents)
+# client = commands.Bot(command_prefix='-', intents=intents)
 client = commands.Bot(command_prefix='-')
+
 
 @client.event
 async def on_ready():
     print('We have logged in as {0.user} [ready]'.format(client))
+    await playing()
+
 
 @client.command()
 async def ping(ctx):
     await ctx.send(f'🏓 Pong! {round(client.latency, 2)} 🏓')
 
 
-@client.command()
-async def playing(ctx):
+# @client.command()
+async def playing():
     await client.change_presence(activity=discord.Game(name='VS Code 🔨🔨'))
 
 
 @client.command()
-async def watch(ctx):
-    activity = discord.Activity(
-        name='Coding 🔨🔨', type=discord.ActivityType.watching)
-    await client.change_presence(activity=activity)
+async def source(ctx):
+    await ctx.message.delete()
+    await ctx.send(f"**{ctx.bot.user}**\nhttps://github.com/hug0Hq/simple-discord-bot")
+
+
+@client.command()
+async def licence(ctx):
+    await ctx.message.delete()
+    await ctx.send(f"**{ctx.bot.user}**\nhttps://github.com/hug0Hq/simple-discord-bot/blob/master/LICENSE")
+
 
 for file in os.listdir("cogs"):
     if file.endswith(".py"):
@@ -58,7 +67,7 @@ async def info(ctx):
     em.add_field(name='Soundboard help', value='#listsound')
     await bot.say(embed=em)
 
-#add msg
+# add msg
 @bot.command(pass_context=True)
 async def addmsg(ctx, msg):
     p = await bot.get_message(ctx.message.channel, ctx.message.id)
@@ -78,7 +87,7 @@ async def addmsg(ctx, msg):
 
     await bot.say("Done! ID: "+str(numb))
 
-#send msg
+# send msg
 @bot.command(pass_context=True) #pass_context=True
 async def msg(ctx):
     p = await bot.get_message(ctx.message.channel, ctx.message.id)
@@ -97,7 +106,7 @@ async def msg(ctx):
     else:
         await bot.say(el)
 
-#see msg
+# see msg
 @bot.command(pass_context=True)
 async def listmsg(ctx):
     p = await bot.get_message(ctx.message.channel, ctx.message.id)
@@ -112,7 +121,7 @@ async def listmsg(ctx):
 
     await bot.say(embed=em)
 
-#see sound
+# see sound
 @bot.command(pass_context=True)
 async def listsound(ctx):
     p = await bot.get_message(ctx.message.channel, ctx.message.id)
@@ -125,7 +134,7 @@ async def listsound(ctx):
 
     await bot.say(embed=em)
 
-#add sound
+# add sound
 @bot.command(pass_context=True)
 async def addsound(ctx):
     p = await bot.get_message(ctx.message.channel, ctx.message.id)
@@ -160,15 +169,15 @@ async def addsound(ctx):
         fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
         await bot.say(ctx.message.channel, fmt.format(type(e).__name__, e))
 
-    #except:
+    # except:
     #    print('Unknown error')
 
 
-    #print(attachments ["url"])
-    #await client.send_file(client.get_server('321332957690331138').default_channel, '1.jpg')
+    # print(attachments ["url"])
+    # await client.send_file(client.get_server('321332957690331138').default_channel, '1.jpg')
     # await bot.say("Done! ID: ")
 
-#sound play
+# sound play
 @bot.command(pass_context=True)
 async def play(ctx, soundid):
     p = await bot.get_message(ctx.message.channel, ctx.message.id)

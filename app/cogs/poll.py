@@ -27,8 +27,14 @@ class Poll(commands.Cog):
         for react in numbers[:len(tp)]:
             await message.add_reaction(react)
 
-    @commands.command(name='poll', aliases=['polls'])
-    async def poll(self, ctx, *, question):
+    @commands.group(name='poll', aliases=['polls'])
+    async def poll(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.message.delete()
+            await ctx.send('Invalid poll command passed...')
+
+    @poll.command()
+    async def dd(self, ctx, *, question):
         await ctx.message.delete()  # delete user msg
         if question.find(';') == -1:
             await self.__simplePoll(ctx, question)

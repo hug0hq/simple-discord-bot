@@ -14,7 +14,13 @@ class SoundBoard(commands.Cog):
     async def __stop(self):
         await self.voice.disconnect()
 
-    @commands.command(name='playsound', aliases=['play', 'plays', 'sound'])
+    @commands.group(name='sound', aliases=['s'])
+    async def sound(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.message.delete()
+            await ctx.send('Invalid poll command passed...')
+
+    @sound.command(name='play', aliases=['p'])
     async def playsound(self, ctx, key):
         await ctx.message.delete()
         if not ctx.message.author.voice:
@@ -27,7 +33,7 @@ class SoundBoard(commands.Cog):
             channel = ctx.message.author.voice.channel
             try:
                 voice = await channel.connect()
-                url = await db.getFrom(ctx.guild.id, 'soundboard', key)
+                url = db.getFrom(ctx.guild.id, 'soundboard', key)
                 print(url)
 
                 def my_after(error):
@@ -50,8 +56,9 @@ class SoundBoard(commands.Cog):
     """ @commands.command(name='test', aliases=['t'])
     async def test(self, ctx):
         db.test() """
+    
 
-    @commands.command(name='addsound', aliases=['adds'])
+    @sound.command(name='add', aliases=['a'])
     async def addsound(self, ctx, *, key):
         # p = await bot.get_message(ctx.message.channel, ctx.message.id)
         # await bot.delete_message(p)
@@ -68,8 +75,8 @@ class SoundBoard(commands.Cog):
             await ctx.send(att.filename.split('.')[-1]+" is not a valid audio format")
         else:
             # await db.createDictionary('soundboard')
-            await db.saveTo( ctx.guild.id, 'soundboard', (keyname, url))
-            await ctx.send("☁☁ done")
+            db.saveTo( ctx.guild.id, 'soundboard', (keyname, url))
+            await ctx.send("⬆ don't delete the source sound\n☁☁ done")
 
 
 def setup(bot):
