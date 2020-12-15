@@ -1,14 +1,13 @@
 import discord
+import os
 
-def is_owner(ctx):
-    """ Checks if the author is one of the owners """
-    return ctx.author.id in owners
 
-def hasRole(ctx):
-    """ Checks if the author is one of the owners """
-    print(ctx.author)
+def hasRole(ctx, role):
+    for r in ctx.message.author.roles:
+        if role == r.name:
+            return True
     return False
-    """ if role in member.roles == 'o__o':
-        return True
-    else:
-        return False """
+
+
+def hasManagerRole(ctx):
+    return hasRole(ctx, os.environ['MANAGER_ROLE'])

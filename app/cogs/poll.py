@@ -30,14 +30,14 @@ class Poll(commands.Cog):
     async def poll(self, ctx, *, question):
         """ Create a poll """
         await ctx.message.delete()
-        if question.find(';') < -1:
+        if question.find(';') == -1:
             await self.__simplePoll(ctx, question)
         else:
             await self.__multiplePoll(ctx, question)
 
     @poll.error
     async def poll_error(self, ctx, error):
-        await ctx.message.delete()
+        #await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send('You\'re missing an argument 😥\nSee `-help poll`')
 

@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import asyncio
 from data import db
+import re
+from utils import permissions, http
 
 
 class SoundBoard(commands.Cog):
@@ -13,6 +15,7 @@ class SoundBoard(commands.Cog):
 
     @commands.group(name='sound', aliases=['s'])
     async def sound(self, ctx):
+        """ Sound Board """
         if ctx.invoked_subcommand is None:
             await ctx.message.delete()
             await ctx.send('You\'re missing an argument 😥\nSee `-help sound`')
@@ -47,26 +50,45 @@ class SoundBoard(commands.Cog):
 
     @playSound.error
     async def playSound_error(self, ctx, error):
-        await ctx.message.delete()
+        # await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help sound play`')
 
     @sound.command(name='add', aliases=['a'])
+    @commands.check(permissions.hasManagerRole)
     async def addSound(self, ctx, *, name):
-        keyname = name.lower().replace(" ", "-")
-        whiteList = ['mp3', 'ogg', 'wav']
-
-        att = ctx.message.attachments[0]
-        url = att.url
-        if att.filename.split('.')[-1] not in whiteList:
-            await ctx.send(att.filename.split('.')[-1]+" is not a valid audio format")
-        else:
-            db.saveTo(ctx.guild.id, 'soundboard', (keyname, url))
+        whiteList = ['.mp3', '.ogg', '.wav']
+        filename = re.sub(
+            r'http\S+', '', name).strip().lower().replace(" ", "-")
+        url = re.search("(?P<url>https?://[^\s]+)", name)
+        if url:
+            await ctx.message.delete()
+            error = http.fileIsType(url.group("url"), whiteList)
+            if error:
+                return await ctx.send(f"**{error}** is not a valid type")
+            saveerror = db.saveTo(ctx.guild.id, 'soundboard',
+                                  filename, url.group("url"))
+            if saveerror:
+                return await ctx.send(f"**{filename}** already exists 🤔")
+            await ctx.send("☁☁ Done!")
+        elif ctx.message.attachments:
+            url = ctx.message.attachments[0].url
+            error = http.fileIsType(url, whiteList)
+            if error:
+                await ctx.message.delete()
+                return await ctx.send(f"**{error}** is not a valid type")
+            saveerror = db.saveTo(ctx.guild.id, 'soundboard', filename, url)
+            if saveerror:
+                await ctx.message.delete()
+                return await ctx.send(f"**{filename}** already exists 🤔")
             await ctx.send("⬆ Don't delete the source sound\n☁☁ Done!")
+        else:
+            await ctx.message.delete()
+            await ctx.send("No URL or file 👎")
 
     @addSound.error
     async def addSound_error(self, ctx, error):
-        await ctx.message.delete()
+        # await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help sound add`')
 
@@ -81,6 +103,7 @@ class SoundBoard(commands.Cog):
         message = await ctx.channel.send(embed=embed)
 
     @sound.command(name='remove', aliases=['rm'])
+    @commands.check(permissions.hasManagerRole)
     async def removeSound(self, ctx, name):
         await ctx.message.delete()
         db.delKey(ctx.guild.id, 'soundboard', name)
@@ -88,7 +111,7 @@ class SoundBoard(commands.Cog):
 
     @removeSound.error
     async def removeSound_error(self, ctx, error):
-        await ctx.message.delete()
+        # await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help sound remove`')
 

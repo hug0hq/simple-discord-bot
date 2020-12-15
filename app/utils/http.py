@@ -1,5 +1,6 @@
 import aiohttp
 import json
+import mimetypes
 
 
 async def get(url, type='json'):
@@ -23,3 +24,10 @@ async def get(url, type='json'):
     except aiohttp.ClientConnectorError as e:
         print("[Api] canceled,", e)
         return 'error'
+
+
+def fileIsType(url, types):
+    filetype = mimetypes.guess_type(url)
+    fileextension = mimetypes.guess_extension(filetype[0])
+    if fileextension not in types:
+        return fileextension

@@ -24,14 +24,15 @@ def nuke(guild):
     pk.deldb()
 
 
-def saveTo(guild, dic, value):
+def saveTo(guild, dic, key, value):
     """ save a key/value on a dictionary """
     pk = pickledb.load(f'{PATH}/{guild}.json', True)
     if not pk.exists(dic):
         pk.dcreate(dic)
+    if pk.dexists(dic, key):
+        return 'exists'
 
-    print(f'save {value} in {dic}')
-    pk.dadd(dic, value)
+    pk.dadd(dic, (key, value))
 
 
 def getFrom(guild, dic, key):

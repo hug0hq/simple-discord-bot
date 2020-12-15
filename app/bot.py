@@ -34,14 +34,23 @@ async def on_ready():
 
 @client.check
 async def globally_block_dms(ctx):
-    return ctx.guild is not None
+    if ctx.guild is None:
+        await ctx.send('Please do not send me DMs 😐')
+        return False
+    return True
+    # return ctx.guild is not None
 
 
 @client.event
 async def on_command_error(ctx, error):
+    await ctx.message.delete()
     if isinstance(error, commands.CommandNotFound):
-        await ctx.message.delete()
+        # await ctx.message.delete()
         return await ctx.send('Command 404 😥\nSee `-help`')
+
+    elif isinstance(error, commands.CheckFailure):
+
+        return await ctx.send('Permission denied 🚨🚨')
     elif isinstance(error, commands.MissingRequiredArgument):
         #handled in cogs
         return
@@ -51,12 +60,12 @@ async def on_command_error(ctx, error):
     else:
         raise error
 
-""" #@commands.Cog.listener()
-@client.listener()
+
+@client.event
 async def on_member_join(member):
     channel = member.guild.system_channel
     if channel is not None:
-        await channel.send('Hi {0.mention}  🍣🍣🥑'.format(member)) """
+        await channel.send(f'Hi, {member.mention}  😘😎')
 
 
 @client.command()
