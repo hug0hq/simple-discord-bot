@@ -3,29 +3,45 @@ from discord.ext import commands
 from utils import permissions
 import random
 
+
 class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # @commands.check(permissions.hasRole)
-    @commands.command(name='kick', aliases=['k'])
-    async def randomDisconnect(self, ctx, member: discord.Member):
-        await ctx.message.delete()
-        """ if not ctx.member.hasPermission("o_o"):
-            return await ctx.send('❌') """
-
-        print(ctx)
-        await ctx.send('🎲🎁 By ')
-        # message = await ctx.channel.send(embed=embed)
-
-    @commands.command(aliases=['flip', 'coin'])
+    @commands.command(name='dice', aliases=['d'])
     async def dice(self, ctx):
-        await ctx.send(f"🎲🎲 **{ctx.author.nick}** got **{random.randint(1, 6)}**!")
+        """ Roll a dice """
+        await ctx.message.delete()
+        await ctx.send(f"🎲🎲   **{ctx.author.mention}** got **{random.randint(1, 6)}**!")
 
-    @commands.command()
-    async def f(self, ctx, *, text: commands.clean_content = None):
-        reason = f"to **{text}** " if text else ""
-        await ctx.send(f"⚰️ **{ctx.author.nick}** has paid their respect {reason} ❤")
+    @commands.command(name='pray', aliases=['f'])
+    async def pray(self, ctx, member: discord.Member = None):
+        """ Pray respect """
+        await ctx.message.delete()
+        reason = f"to {member.mention}" if member else ""
+        await ctx.send(f"⚰️⚰️   {ctx.author.mention} has paid their respect {reason}")
+
+    @pray.error
+    async def pray_error(self, ctx, error):
+        await ctx.message.delete()
+        if isinstance(error, commands.MemberNotFound):
+            await ctx.send('I could not find that member 😥')
+
+    @commands.command(name='gift', aliases=['g'])
+    async def gift(self, ctx, member: discord.Member):
+        """ Offers a gift """
+        await ctx.message.delete()
+        gifts = ['🎈', '💊', '👟', '🏆', '☂️', '🍌',
+                 '🍆', '🥕', '⚽️', '🎷', '🧻', '💩']
+        await ctx.send(f'🎲🎁   {ctx.author.mention} offered a {random.choice(gifts)} to {member.mention}')
+
+    @gift.error
+    async def gift_error(self, ctx, error):
+        await ctx.message.delete()
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send('You\'re missing an argument 😥\nSee `-help gift`')
+        elif isinstance(error, commands.MemberNotFound):
+            await ctx.send('I could not find that member 😥')
 
 
 def setup(bot):

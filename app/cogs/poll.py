@@ -1,45 +1,46 @@
 import discord
 from discord.ext import commands
 
-numbers = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣']
-
 
 class Poll(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     async def __simplePoll(self, ctx, question):
-        embed = discord.Embed(title=f"📢📢\n{question}?",  colour=0xff4400)
-        #embed.add_field(name=f"{question} ?", value="l")
+        embed = discord.Embed(title=f"📢📢\n{question}?",  colour=0xff4444)
         embed.set_footer(text="React to cast a vote!")
         message = await ctx.channel.send(embed=embed)
         await message.add_reaction('👍')
         await message.add_reaction('👎')
 
     async def __multiplePoll(self, ctx, question):
-        tp = question.split(';')
+        numbers = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣']
+        q = [elem.strip() for elem in question.split(';')]
+        qclean = [elem for ind, elem in enumerate(
+            q) if elem != '' and ind < 5]
         c = '\n'.join(
-            [f'{numbers[ind]}  {elem}?' for ind, elem in enumerate(tp)])
-        embed = discord.Embed(title=f"📢📢\n{c}",  colour=0xff4400)
-        #embed.add_field(name=f"{question} ?", value="l")
+            [f'{numbers[ind]}  {elem}?' for ind, elem in enumerate(qclean)])
+        embed = discord.Embed(title=f"📢📢\n{c}",  colour=0xff4444)
         embed.set_footer(text="React to cast a vote!")
         message = await ctx.channel.send(embed=embed)
-        for react in numbers[:len(tp)]:
+        for react in numbers[:len(qclean)]:
             await message.add_reaction(react)
 
-    @commands.group(name='poll', aliases=['polls'])
-    async def poll(self, ctx):
-        if ctx.invoked_subcommand is None:
-            await ctx.message.delete()
-            await ctx.send('Invalid poll command passed...')
-
-    @poll.command()
-    async def dd(self, ctx, *, question):
-        await ctx.message.delete()  # delete user msg
-        if question.find(';') == -1:
+    @commands.group(name='poll', aliases=['p'])
+    async def poll(self, ctx, *, question):
+        """ Create a poll """
+        await ctx.message.delete()
+        if question.find(';') < -1:
             await self.__simplePoll(ctx, question)
         else:
             await self.__multiplePoll(ctx, question)
+
+    @poll.error
+    async def poll_error(self, ctx, error):
+        await ctx.message.delete()
+        if isinstance(error, commands.MissingRequiredArgument):
+            return await ctx.send('You\'re missing an argument 😥\nSee `-help poll`')
+
 
 
 def setup(bot):

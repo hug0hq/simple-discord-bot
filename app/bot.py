@@ -1,36 +1,67 @@
 import discord
 from discord.ext import commands
 import os
-""" from discord.ext.commands import Bot
-import asyncio
-import json
-import os
-import requests
-import shutil """
+from discord.ext import commands
 
 __author__ = "Hugo - hug0Hq"
 __version__ = "1.2"
 
 
 intents = discord.Intents(messages=True, guilds=True)
-# client = commands.Bot(command_prefix='-', intents=intents)
 client = commands.Bot(command_prefix='-')
 
 
 @client.event
+async def on_connect():
+    print(f'Connected as {client.user.id}')
+
+
+@client.event
+async def on_resumed():
+    print(f'Connection resumed as {client.user.id}')
+
+
+@client.event
+async def on_disconnect():
+    print('Bye!')
+
+
+@client.event
 async def on_ready():
-    print('We have logged in as {0.user} [ready]'.format(client))
-    await playing()
+    print(f'We have logged in as {client.user} [ready]')
+    await client.change_presence(activity=discord.Game(name=os.environ['ACTIVITY_MSG']))
+
+
+@client.check
+async def globally_block_dms(ctx):
+    return ctx.guild is not None
+
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.message.delete()
+        return await ctx.send('Command 404 😥\nSee `-help`')
+    elif isinstance(error, commands.MissingRequiredArgument):
+        #handled in cogs
+        return
+    elif isinstance(error, commands.MemberNotFound):
+        #handled in cogs
+        return
+    else:
+        raise error
+
+""" #@commands.Cog.listener()
+@client.listener()
+async def on_member_join(member):
+    channel = member.guild.system_channel
+    if channel is not None:
+        await channel.send('Hi {0.mention}  🍣🍣🥑'.format(member)) """
 
 
 @client.command()
 async def ping(ctx):
     await ctx.send(f'🏓 Pong! {round(client.latency, 2)} 🏓')
-
-
-# @client.command()
-async def playing():
-    await client.change_presence(activity=discord.Game(name='VS Code 🔨🔨'))
 
 
 @client.command()

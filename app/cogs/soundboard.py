@@ -1,9 +1,6 @@
 import discord
 from discord.ext import commands
-
 import asyncio
-# from asyncio import sleep
-
 from data import db
 
 
@@ -18,27 +15,24 @@ class SoundBoard(commands.Cog):
     async def sound(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.message.delete()
-            await ctx.send('Invalid poll command passed...')
+            await ctx.send('You\'re missing an argument 😥\nSee `-help sound`')
 
     @sound.command(name='play', aliases=['p'])
-    async def playsound(self, ctx, key):
+    async def playSound(self, ctx, name):
         await ctx.message.delete()
         if not ctx.message.author.voice:
-            await ctx.send('You\'re not in a voice channel!')
+            await ctx.send('You\'re not in a voice channel!  🔔🔊')
             return
         else:
             if not discord.opus.is_loaded():
                 discord.opus.load_opus('/usr/bin/opusenc')
-
             channel = ctx.message.author.voice.channel
             try:
                 voice = await channel.connect()
-                url = db.getFrom(ctx.guild.id, 'soundboard', key)
-                print(url)
+                url = db.getFrom(ctx.guild.id, 'soundboard', name)
 
                 def my_after(error):
-                    #coro = voice.disconnect()
-                    print('Done', error)
+                    print('Sound! - error:', error)
                     fut = asyncio.run_coroutine_threadsafe(
                         voice.disconnect(), self.bot.loop)
                     try:
@@ -46,27 +40,20 @@ class SoundBoard(commands.Cog):
                     except:
                         # an error happened sending the message
                         pass
-                # source = await discord.FFmpegOpusAudio.from_probe(url)
-                voice.play(discord.FFmpegPCMAudio(url), after=my_after)
-                # lambda e: print(f'Done {e}')
 
+                voice.play(discord.FFmpegPCMAudio(url), after=my_after)
             except Exception as e:
                 print(e)
-    
-    """ @commands.command(name='test', aliases=['t'])
-    async def test(self, ctx):
-        db.test() """
-    
+
+    @playSound.error
+    async def playSound_error(self, ctx, error):
+        await ctx.message.delete()
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send('You\'re missing an argument 😥\nSee `-help sound play`')
 
     @sound.command(name='add', aliases=['a'])
-    async def addsound(self, ctx, *, key):
-        # p = await bot.get_message(ctx.message.channel, ctx.message.id)
-        # await bot.delete_message(p)
-        # await ctx.message.delete()  # delete user msg
-        print(ctx.message.attachments)
-        # print(ctx.message)
-        # print(key.lower().replace(" ", "-"))
-        keyname = key.lower().replace(" ", "-")
+    async def addSound(self, ctx, *, name):
+        keyname = name.lower().replace(" ", "-")
         whiteList = ['mp3', 'ogg', 'wav']
 
         att = ctx.message.attachments[0]
@@ -74,9 +61,36 @@ class SoundBoard(commands.Cog):
         if att.filename.split('.')[-1] not in whiteList:
             await ctx.send(att.filename.split('.')[-1]+" is not a valid audio format")
         else:
-            # await db.createDictionary('soundboard')
-            db.saveTo( ctx.guild.id, 'soundboard', (keyname, url))
-            await ctx.send("⬆ don't delete the source sound\n☁☁ done")
+            db.saveTo(ctx.guild.id, 'soundboard', (keyname, url))
+            await ctx.send("⬆ Don't delete the source sound\n☁☁ Done!")
+
+    @addSound.error
+    async def addSound_error(self, ctx, error):
+        await ctx.message.delete()
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send('You\'re missing an argument 😥\nSee `-help sound add`')
+
+    @sound.command(name='list', aliases=['l'])
+    async def listSound(self, ctx):
+        await ctx.message.delete()
+        imglist = db.listKeysFrom(ctx.guild.id, 'soundboard')
+        embed = discord.Embed(title="🔊 Sound board list:",
+                              description="-sound play [name]", colour=0xff4444)
+        for name in imglist:
+            embed.add_field(name=name, value="\u200b")
+        message = await ctx.channel.send(embed=embed)
+
+    @sound.command(name='remove', aliases=['rm'])
+    async def removeSound(self, ctx, name):
+        await ctx.message.delete()
+        db.delKey(ctx.guild.id, 'soundboard', name)
+        await ctx.send('🧯 Done!')
+
+    @removeSound.error
+    async def removeSound_error(self, ctx, error):
+        await ctx.message.delete()
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send('You\'re missing an argument 😥\nSee `-help sound remove`')
 
 
 def setup(bot):
