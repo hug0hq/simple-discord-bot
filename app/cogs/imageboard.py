@@ -30,7 +30,6 @@ class ImageBoard(commands.Cog):
 
     @displayImg.error
     async def displayImg_error(self, ctx, error):
-        # await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help img show`')
 
@@ -68,7 +67,6 @@ class ImageBoard(commands.Cog):
 
     @ addImg.error
     async def addImg_error(self, ctx, error):
-        # await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help img add`')
 
@@ -91,7 +89,6 @@ class ImageBoard(commands.Cog):
 
     @ removeImg.error
     async def removeImg_error(self, ctx, error):
-        # await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help img remove`')
 

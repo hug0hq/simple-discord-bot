@@ -37,10 +37,8 @@ class Poll(commands.Cog):
 
     @poll.error
     async def poll_error(self, ctx, error):
-        #await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send('You\'re missing an argument 😥\nSee `-help poll`')
-
 
 
 def setup(bot):

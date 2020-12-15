@@ -8,7 +8,6 @@ class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    #@commands.cooldown(rate=1, per=5.0, type=commands.BucketType.user)
     @commands.command(name='dice', aliases=['d'])
     async def dice(self, ctx):
         """ Roll a dice """
@@ -24,7 +23,6 @@ class Fun(commands.Cog):
 
     @pray.error
     async def pray_error(self, ctx, error):
-        #await ctx.message.delete()
         if isinstance(error, commands.MemberNotFound):
             await ctx.send('I could not find that member 😥')
 
@@ -38,8 +36,6 @@ class Fun(commands.Cog):
 
     @gift.error
     async def gift_error(self, ctx, error):
-        print('call error')
-        #await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help gift`')
         elif isinstance(error, commands.MemberNotFound):

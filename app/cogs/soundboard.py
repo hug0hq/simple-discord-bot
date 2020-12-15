@@ -50,14 +50,13 @@ class SoundBoard(commands.Cog):
 
     @playSound.error
     async def playSound_error(self, ctx, error):
-        # await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help sound play`')
 
     @sound.command(name='add', aliases=['a'])
     @commands.check(permissions.hasManagerRole)
     async def addSound(self, ctx, *, name):
-        whiteList = ['.mp3', '.ogg', '.wav']
+        whiteList = ['.mp3', '.ogg', '.oga', '.wav']
         filename = re.sub(
             r'http\S+', '', name).strip().lower().replace(" ", "-")
         url = re.search("(?P<url>https?://[^\s]+)", name)
@@ -88,7 +87,6 @@ class SoundBoard(commands.Cog):
 
     @addSound.error
     async def addSound_error(self, ctx, error):
-        # await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help sound add`')
 
@@ -111,7 +109,6 @@ class SoundBoard(commands.Cog):
 
     @removeSound.error
     async def removeSound_error(self, ctx, error):
-        # await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help sound remove`')
 
