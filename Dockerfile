@@ -1,4 +1,4 @@
-FROM python:3.9-alpine
+FROM python:3.9-slim-buster
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
