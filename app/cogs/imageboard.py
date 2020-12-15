@@ -5,7 +5,7 @@ import re
 from utils import permissions, http
 
 
-class ImageBoard(commands.Cog):
+class ImageBoard(commands.Cog, name='Image Board'):
     def __init__(self, bot):
         self.bot = bot
 
@@ -33,7 +33,7 @@ class ImageBoard(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help img show`')
 
-    @img.command(name='add', aliases=['a'])
+    @img.command(name='add', aliases=['a'], description='Use on a file upload or pass a <url> after:')
     @commands.check(permissions.hasManagerRole)
     async def addImg(self, ctx, *, name):
         whiteList = ['.jpeg', '.jpg', '.webp', '.png', '.gif']

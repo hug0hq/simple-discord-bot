@@ -6,7 +6,7 @@ import re
 from utils import permissions, http
 
 
-class SoundBoard(commands.Cog):
+class SoundBoard(commands.Cog, name='Sound Board'):
     def __init__(self, bot):
         self.bot = bot
 
@@ -53,7 +53,7 @@ class SoundBoard(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send('You\'re missing an argument 😥\nSee `-help sound play`')
 
-    @sound.command(name='add', aliases=['a'])
+    @sound.command(name='add', aliases=['a'], description='Use on a file upload or pass a <url> after:')
     @commands.check(permissions.hasManagerRole)
     async def addSound(self, ctx, *, name):
         whiteList = ['.mp3', '.ogg', '.oga', '.wav']

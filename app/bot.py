@@ -7,8 +7,11 @@ __author__ = "Hugo - hug0Hq"
 __version__ = "1.2"
 
 
-intents = discord.Intents(messages=True, guilds=True)
-client = commands.Bot(command_prefix='-')
+intents = discord.Intents.default()
+intents.typing = False
+intents.members = True
+
+client = commands.Bot(command_prefix='-', intents=intents)
 
 
 @client.event
@@ -66,6 +69,7 @@ async def on_member_join(member):
 
 @client.command()
 async def ping(ctx):
+    await ctx.message.delete()
     await ctx.send(f'🏓 Pong! {round(client.latency, 2)} 🏓')
 
 

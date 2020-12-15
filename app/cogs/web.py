@@ -48,7 +48,7 @@ class Web(commands.Cog):
             return
         await ctx.send(f"💡  {js['slip']['advice']}")
 
-    @commands.command(name='dadjoke', aliases=['dj'])
+    @commands.command(name='dadjoke', aliases=['joke', 'dj'])
     async def dadjoke(self, ctx):
         """ Random dad joke """
         await ctx.message.delete()

@@ -26,7 +26,7 @@ class Poll(commands.Cog):
         for react in numbers[:len(qclean)]:
             await message.add_reaction(react)
 
-    @commands.group(name='poll', aliases=['p'])
+    @commands.command(name='poll', aliases=['p'], description='Multiple questions: <question>; <question>')
     async def poll(self, ctx, *, question):
         """ Create a poll """
         await ctx.message.delete()
