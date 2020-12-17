@@ -1,6 +1,15 @@
-version: '3.8'
+version: "3.8"
 
 services:
   simplediscordbot:
     build: .
     command: python bot.py
+    volumes:
+      - db-data:/save
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 2s
+volumes:
+  db-data:

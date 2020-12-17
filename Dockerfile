@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.9-slim-buster AS pythonbase
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -8,8 +8,14 @@ ENV PYTHONUNBUFFERED=1
 
 #deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        libffi-dev \
+        libnacl-dev \
+        python3-dev \
+        gcc \
         opus-tools \
         ffmpeg
+
+FROM pythonbase AS discord
 
 WORKDIR /app
 ADD /app /app
