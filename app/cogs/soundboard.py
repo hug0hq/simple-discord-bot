@@ -27,26 +27,39 @@ class SoundBoard(commands.Cog, name='Sound Board'):
             await ctx.send('You\'re not in a voice channel!  🔔🔊')
             return
         else:
-            if not discord.opus.is_loaded():
-                discord.opus.load_opus('/usr/bin/opusenc')
-            channel = ctx.message.author.voice.channel
+            """ if not discord.opus.is_loaded():
+                discord.opus.load_opus('/usr/bin/opusenc') """
             try:
-                voice = await channel.connect()
                 url = db.getFrom(ctx.guild.id, 'soundboard', name)
+                if url == '404':
+                    return await ctx.send('Invalid key name 😥\nSee `-help sound list`')
+                elif not await http.isOn(url):
+                    return await ctx.send('URL is dead 💀💀')
+
+                channel = ctx.message.author.voice.channel
+                voice = await channel.connect()
+
+                async def quit():
+                    # fix bot disconnect before audio end
+                    await asyncio.sleep(2)
+                    await voice.disconnect()
+                    voice.cleanup()
 
                 def my_after(error):
-                    print('Sound! - error:', error)
+                    print('Sound!', error)
                     fut = asyncio.run_coroutine_threadsafe(
-                        voice.disconnect(), self.bot.loop)
+                        quit(), self.bot.loop)
                     try:
                         fut.result()
                     except:
                         # an error happened sending the message
                         pass
 
-                voice.play(discord.FFmpegPCMAudio(url), after=my_after)
+                source = await discord.FFmpegOpusAudio.from_probe(url)
+                # discord.FFmpegPCMAudio(url)
+                voice.play(source, after=my_after)
             except Exception as e:
-                print(e)
+                print('Sound Error!', e)
 
     @playSound.error
     async def playSound_error(self, ctx, error):

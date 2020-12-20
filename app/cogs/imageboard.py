@@ -23,6 +23,8 @@ class ImageBoard(commands.Cog, name='Image Board'):
     async def displayImg(self, ctx, name):
         await ctx.message.delete()
         url = db.getFrom(ctx.guild.id, 'imageboard', name)
+        if url == '404':
+            return await ctx.send('Invalid key name 😥\nSee `-help img list`')
         embed = discord.Embed(title="",  colour=0xff4444)
         embed.set_footer(text=f"Image board - {name}")
         embed.set_image(url=url)

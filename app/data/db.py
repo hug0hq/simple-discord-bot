@@ -29,16 +29,19 @@ def saveTo(guild, dic, key, value):
     pk = pickledb.load(f'{PATH}/{guild}.json', True)
     if not pk.exists(dic):
         pk.dcreate(dic)
-    if pk.dexists(dic, key):
-        return 'exists'
-
-    pk.dadd(dic, (key, value))
+    elif pk.dexists(dic, key):
+        return '409' #exists
+    else:
+        pk.dadd(dic, (key, value))
 
 
 def getFrom(guild, dic, key):
     """ get a values from a dictionary """
     pk = pickledb.load(f'{PATH}/{guild}.json', False)
-    return pk.dget(dic, key)
+    if not pk.dexists(dic, key):
+        return '404'
+    else:
+        return pk.dget(dic, key)
 
 
 def listKeysFrom(guild, dic):

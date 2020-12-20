@@ -49,7 +49,7 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         return await ctx.send('Command 404 😥\nSee `-help`')
     elif isinstance(error, commands.CheckFailure):
-        return await ctx.send('Permission denied 🚨🚨')
+        return await ctx.send('Permission denied 🚨🚨') 
     elif isinstance(error, commands.MissingRequiredArgument):
         #handled in cogs
         return

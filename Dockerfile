@@ -6,13 +6,13 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
-#deps
+# Deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libffi-dev \
         libnacl-dev \
         python3-dev \
         gcc \
-        opus-tools \
+        #opus-tools \
         ffmpeg \
         make 
 

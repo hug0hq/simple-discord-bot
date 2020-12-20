@@ -4,7 +4,6 @@ import mimetypes
 
 
 async def get(url, type='json'):
-    """ api http get request """
     headers = {'Accept': 'application/json'}
     try:
         async with aiohttp.ClientSession() as session:
@@ -31,3 +30,15 @@ def fileIsType(url, types):
     fileextension = mimetypes.guess_extension(filetype[0])
     if fileextension not in types:
         return fileextension
+
+
+async def isOn(url):
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as r:
+                if r.status == 200:
+                    return True
+                else:
+                    return False
+    except aiohttp.ClientConnectorError as e:
+        return False
