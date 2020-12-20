@@ -27,8 +27,8 @@ class SoundBoard(commands.Cog, name='Sound Board'):
             await ctx.send('You\'re not in a voice channel!  🔔🔊')
             return
         else:
-            """ if not discord.opus.is_loaded():
-                discord.opus.load_opus('/usr/bin/opusenc') """
+            #if not discord.opus.is_loaded():
+            #discord.opus.load_opus('/usr/bin/opusenc') 
             try:
                 url = db.getFrom(ctx.guild.id, 'soundboard', name)
                 if url == '404':

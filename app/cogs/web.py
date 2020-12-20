@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from utils import http
+from datetime import datetime
 
 
 class Web(commands.Cog):
@@ -74,6 +75,20 @@ class Web(commands.Cog):
         await ctx.message.delete()
         if isinstance(error, commands.MemberNotFound):
             await ctx.send('I could not find that member 😥')
+
+    @commands.command(name='btc')
+    async def btc(self, ctx):
+        """ BTC price """
+        await ctx.message.delete()
+        js = await http.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur&include_24hr_change=true&include_last_updated_at=true')
+        if js == 'error':
+            await self.__error(ctx)
+            return
+        price = js['bitcoin']['eur']
+        change = js['bitcoin']['eur_24h_change']
+        time = datetime.fromtimestamp(js['bitcoin']['last_updated_at'])
+        direction = '🟢📈🚀🌕' if change > 0 else '🔴📉🕯️‼'
+        await ctx.send(f"💰💰  **1₿** = **{price}€**  {change:.2}% {direction}\n⌚{time.time()}")
 
 
 def setup(bot):
