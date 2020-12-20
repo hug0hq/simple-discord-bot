@@ -1,0 +1,14 @@
+{
+	"name": "simple discord bot - devenv",
+	"dockerComposeFile": [
+		"../docker-compose.yml"
+	],
+	"service": "simplediscordbot",
+	"workspaceFolder": "/workspace/bot",
+	"settings": {
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+	"extensions": [
+		"ms-python.python"
+	]
+}
