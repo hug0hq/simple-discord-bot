@@ -1,9 +1,10 @@
+#dev compose
 version: "3.8"
 services:
   simplediscordbot:
     build:
       context: .
-      dockerfile: .devcontainer/Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
       - .:/workspace/bot:cached
     env_file:

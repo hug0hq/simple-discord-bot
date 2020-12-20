@@ -13,4 +13,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 COPY /app/requirements.txt .
+RUN python -m pip install --upgrade pip
 RUN python -m pip install -r requirements.txt

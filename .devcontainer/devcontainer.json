@@ -1,8 +1,7 @@
 {
 	"name": "simple discord bot - devenv",
 	"dockerComposeFile": [
-		"../docker-compose.yml",
-		"docker-compose.yml"
+		"../docker-compose.yml"
 	],
 	"service": "simplediscordbot",
 	"workspaceFolder": "/workspace/bot",
