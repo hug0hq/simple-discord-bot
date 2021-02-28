@@ -4,7 +4,7 @@ import os
 from discord.ext import commands
 
 __author__ = "Hugo - hug0Hq"
-__version__ = "1.2"
+__version__ = "1.2.1"
 
 
 intents = discord.Intents.default()
