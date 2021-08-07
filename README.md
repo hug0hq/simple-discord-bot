@@ -53,7 +53,7 @@ MANAGER_ROLE=[management role]
 
 #### VS Code + [WSL Containers](https://code.visualstudio.com/docs/remote/containers)
 
- - Remote-Containers: Reopen Folder in Containe
+ - Remote-Containers: Reopen Folder in Container
 
 #### Docker Compose
 
