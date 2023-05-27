@@ -39,7 +39,7 @@ Example with sound:
 or
 `-sound add <name>`
 
-![Upload File Example](https://gateway.pinata.cloud/ipfs/Qmauj3j6SAHdsVMUySftKbVKY8F5NE2qVyRJy8Lqi26AdS)
+![Upload File Example](./img.png)
 
 ## Docker
 ### Development Enviroment
